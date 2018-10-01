@@ -1,0 +1,21 @@
+{
+  "name": "cs554-assignment6",
+  "version": "1.0.0",
+  "description": "a simple demonstration of socket.io (web sockets)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node server.js | node worker.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kakde",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "node-redis-pubsub": "^2.0.0",
+    "redis": "^2.8.0",
+    "socket.io": "^2.1.0"
+  }
+}

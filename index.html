@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>CS554 Assignment6</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <!--onload="onFormLoad()">-->
+    <div class="container">
+        <h1>Socket.io Demonstration</h1>
+        <form>
+            <div class="form-group">
+                <label for="userName">Username</label>
+                <input type="text" class="form-control" id="userName">
+            </div>
+            <div class="form-group">
+                <label for="searchQuery">Search Query</label>
+                <input type="text" class="form-control" id="searchQuery">
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <input type="text" class="form-control" id="message">
+            </div>
+            <div class="form-group">
+                <input type="button" onclick="onFormSubmit()" class="btn btn-primary" id="submit" value="Submit">
+            </div>
+        </form>
+        <div class="row" id="results-area">
+            <!-- This is the container area for dynamic image results emitted by socket.io -->
+        </div>
+    </div>
+    <script>
+        var socket = io.connect();
+
+        // on form load, establish connection to web socket
+        //function onFormLoad() {
+        //    socket = io.connect();
+        //}
+
+        // on form submit/btn-click, send form details via websocket to server
+        function onFormSubmit() {
+            let formData = {
+                userName: document.getElementById("userName").value,
+                searchQuery: document.getElementById("searchQuery").value,
+                message: document.getElementById("message").value
+            }
+            socket.emit('send message', formData);
+
+            // make username field read-only, and reset the other 2 fields to blank
+            ///\cite https://www.w3schools.com/jsref/prop_text_readonly.asp
+            document.getElementById("userName").readOnly = true;
+            document.getElementById("searchQuery").value = '';
+            document.getElementById("message").value = '';
+
+            // console.log('Form submitted with data: '+formData.userName);
+        }
+
+        // at all times, check for incoming data from web-socket
+        socket.on('new message', function (data) {
+            // append newly recieved data to div "results-area"
+            var resultsArea = document.getElementById("results-area");
+
+            for (let i = 0; i < data.data.hits.length; i++) {
+                ///\cite https://getbootstrap.com/docs/4.0/components/card/
+                // outer most level div, class = col
+                var child_L1 = document.createElement('div');
+                child_L1.className = "col-md-3 col-sm-2 col-lg-2";
+
+                // next level div, class = card
+                var child_L2 = document.createElement('div');
+                child_L2.className = 'card';
+
+                // image inside card
+                var child_L3_1 = document.createElement('img');
+                child_L3_1.className = 'card-img-top';
+                child_L3_1.src = data.data.hits[i].previewURL;
+
+                // card-body as a div (this contains all text elements of the card)
+                var child_L3_2 = document.createElement('div');
+                child_L3_2.className = 'card-body';
+
+                // text inside card body
+                var child_L4 = document.createElement('p');
+                child_L4.className = 'card-text';
+                ///\https://stackoverflow.com/a/33052216
+                child_L4.setAttribute('style', 'white-space: pre;');
+                child_L4.textContent = 'Username: ' + data.userName;
+                child_L4.textContent += "\r\nMessage: " + data.message;
+                
+                // append image and text inside card, then append card itself within div
+                child_L3_2.appendChild(child_L4);
+                child_L2.appendChild(child_L3_1);
+                child_L2.appendChild(child_L3_2);
+                
+                // append card into container
+                document.getElementById("results-area").appendChild(child_L1.appendChild(child_L2));
+            }
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+</body>
+
+</html>
