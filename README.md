@@ -29,8 +29,8 @@ When the worker is informed to research for a message, it will search the pixaba
 After it downloads these results ("researching"), it will publish a message of results from pixabay, as well as the user who searched for it, and their message.
 
 # How to run
-npm install
-npm run build
-npm start
+1. npm install
+2. npm run build
+3. npm start  
 
 Use a browser to go to http://localhost:3000. You can open multiple browser sessions with this URL and search Pixabay via unique usernames.
